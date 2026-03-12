@@ -133,44 +133,33 @@ class PhysicsDataProcessor:
         
         statistics = self.calculate_statistics()
         
-        latex = r"""
-        \section{统计结果}
+        latex = f"""
+        \\section{{统计结果}}
         
-        \subsection{基本统计量}
-        \begin{align}
-        \bar{x} &= {x_mean:.4f} \\
-        \bar{y} &= {y_mean:.4f} \\
-        \sigma_x^2 &= {x_var:.4f} \\
-        \sigma_y^2 &= {y_var:.4f}
-        \end{align}
+        \\subsection{{基本统计量}}
+        \\begin{{align}}
+        \\bar{{x}} &= {statistics['x_mean']:.4f} \\\\
+        \\bar{{y}} &= {statistics['y_mean']:.4f} \\\\
+        \\sigma_x^2 &= {statistics['x_var']:.4f} \\\\
+        \\sigma_y^2 &= {statistics['y_var']:.4f}
+        \\end{{align}}
         
-        \subsection{最小二乘法拟合}
-        \begin{align}
-        y &= kx + b \\
-        k &= {slope:.4f} \\
-        b &= {intercept:.4f} \\
-        r &= {r_value:.4f} \\
-        r^2 &= {r_squared:.4f} \\
-        \text{标准误差} &= {std_err:.4f} \\
-        \text{均方根误差} &= {rmse:.4f}
-        \end{align}
+        \\subsection{{最小二乘法拟合}}
+        \\begin{{align}}
+        y &= kx + b \\\\
+        k &= {statistics['slope']:.4f} \\\\
+        b &= {statistics['intercept']:.4f} \\\\
+        r &= {statistics['r_value']:.4f} \\\\
+        r^2 &= {statistics['r_squared']:.4f} \\\\
+        \\text{{标准误差}} &= {statistics['std_err']:.4f} \\\\
+        \\text{{均方根误差}} &= {statistics['rmse']:.4f}
+        \\end{{align}}
         
-        \subsection{拟合公式}
-        \begin{equation}
-        y = {slope:.4f}x + {intercept:.4f}
-        \end{equation}
-        """.format(
-            x_mean=statistics['x_mean'],
-            y_mean=statistics['y_mean'],
-            x_var=statistics['x_var'],
-            y_var=statistics['y_var'],
-            slope=statistics['slope'],
-            intercept=statistics['intercept'],
-            r_value=statistics['r_value'],
-            r_squared=statistics['r_squared'],
-            std_err=statistics['std_err'],
-            rmse=statistics['rmse']
-        )
+        \\subsection{{拟合公式}}
+        \\begin{{equation}}
+        y = {statistics['slope']:.4f}x + {statistics['intercept']:.4f}
+        \\end{{equation}}
+        """
         
         return latex
     
