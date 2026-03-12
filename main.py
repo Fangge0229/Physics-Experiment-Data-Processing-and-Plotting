@@ -11,6 +11,7 @@ class PhysicsDataProcessor:
         self.y_label = 'Y'
         self.x_unit = ''
         self.y_unit = ''
+        self.plot_title = ''
     
     def input_data(self):
         print("请输入数据，每行输入一个x和y，用空格分隔，输入q结束")
@@ -27,6 +28,9 @@ class PhysicsDataProcessor:
         
         self.x_data = np.array(self.x_data)
         self.y_data = np.array(self.y_data)
+        
+        # 输入完成后设置标签和单位
+        self._set_labels_after_input()
     
     def input_single_variable_data(self):
         """输入单变量数据，自动为其搭配1,2...的横坐标"""
@@ -47,18 +51,8 @@ class PhysicsDataProcessor:
         self.y_data = np.array(self.y_data)
         print(f"已输入{len(self.y_data)}个数据点，横坐标自动设置为1到{len(self.y_data)}")
         
-        # 设置单变量数据的坐标轴标签
-        print("\n=== 设置坐标轴标签和单位 ===")
-        x_label = input("请输入横坐标变量名称(默认:序号): ") or '序号'
-        self.x_label = x_label
-        x_unit = input("请输入横坐标单位(可留空): ")
-        self.x_unit = f" ({x_unit})" if x_unit else ""
-        
-        self.y_label = input("请输入纵坐标变量名称: ") or 'Y'
-        y_unit = input("请输入纵坐标单位(可留空): ")
-        self.y_unit = f" ({y_unit})" if y_unit else ""
-        
-        print(f"已设置: 横坐标 '{self.x_label}{self.x_unit}', 纵坐标 '{self.y_label}{self.y_unit}'")
+        # 输入完成后设置标签和单位
+        self._set_labels_after_input(is_single_variable=True)
     
     def input_data_from_list(self, x_list, y_list):
         self.x_data = np.array(x_list)
@@ -103,18 +97,30 @@ class PhysicsDataProcessor:
         
         return statistics
     
-    def set_labels(self):
-        """设置坐标轴标签和单位"""
+    def _set_labels_after_input(self, is_single_variable=False):
+        """输入数据后设置坐标轴标签、单位和图表标题"""
         print("\n=== 设置坐标轴标签和单位 ===")
-        self.x_label = input("请输入横坐标变量名称: ") or 'X'
+        if is_single_variable:
+            x_label_default = '序号'
+        else:
+            x_label_default = 'X'
+        self.x_label = input(f"请输入横坐标变量名称(默认:{x_label_default}): ") or x_label_default
         x_unit = input("请输入横坐标单位(可留空): ")
         self.x_unit = f" ({x_unit})" if x_unit else ""
         
-        self.y_label = input("请输入纵坐标变量名称: ") or 'Y'
+        self.y_label = input("请输入纵坐标变量名称(默认:Y): ") or 'Y'
         y_unit = input("请输入纵坐标单位(可留空): ")
         self.y_unit = f" ({y_unit})" if y_unit else ""
         
+        # 设置图表标题
+        title = input("请输入图表标题(可留空使用默认标题): ")
+        if title:
+            self.plot_title = title
+        else:
+            self.plot_title = f'{self.y_label} 关于 {self.x_label} 的最小二乘法拟合'
+        
         print(f"已设置: 横坐标 '{self.x_label}{self.x_unit}', 纵坐标 '{self.y_label}{self.y_unit}'")
+        print(f"图表标题: {self.plot_title}")
     
     def generate_plot(self, save_path=None):
         if len(self.x_data) == 0:
@@ -135,7 +141,7 @@ class PhysicsDataProcessor:
         plt.plot(self.x_data, fit_line, label=f'拟合直线: {slope:.4f}x + {intercept:.4f}', color='red')
         plt.xlabel(f'{self.x_label}{self.x_unit}')
         plt.ylabel(f'{self.y_label}{self.y_unit}')
-        plt.title(f'{self.y_label} 关于 {self.x_label} 的最小二乘法拟合')
+        plt.title(self.plot_title)
         plt.legend()
         plt.grid(True)
         
@@ -197,25 +203,22 @@ class PhysicsDataProcessor:
         print("\n=== 物理实验数据处理程序 ===")
         print("1. 输入双变量数据(x,y)")
         print("2. 输入单变量数据(自动搭配横坐标1,2,...)")
-        print("3. 设置坐标轴标签和单位")
-        print("4. 显示统计结果")
-        print("5. 生成拟合图像")
-        print("6. 输出LaTex公式")
-        print("7. 退出")
+        print("3. 显示统计结果")
+        print("4. 生成拟合图像")
+        print("5. 输出LaTex公式")
+        print("6. 退出")
     
     def run(self):
         self.show_menu()
         
         while True:
-            choice = input("\n请选择功能 (1-7): ")
+            choice = input("\n请选择功能 (1-6): ")
             
             if choice == '1':
                 self.input_data()
             elif choice == '2':
                 self.input_single_variable_data()
             elif choice == '3':
-                self.set_labels()
-            elif choice == '4':
                 stats = self.calculate_statistics()
                 if stats:
                     print("\n=== 统计结果 ===")
@@ -229,10 +232,10 @@ class PhysicsDataProcessor:
                     print(f"r平方: {stats['r_squared']:.4f}")
                     print(f"标准误差: {stats['std_err']:.4f}")
                     print(f"均方根误差: {stats['rmse']:.4f}")
-            elif choice == '5':
+            elif choice == '4':
                 save_path = input("请输入保存路径（留空则直接显示）: ")
                 self.generate_plot(save_path if save_path else None)
-            elif choice == '6':
+            elif choice == '5':
                 latex = self.get_latex_formulas()
                 if latex:
                     print("\n=== LaTex公式 ===")
@@ -245,7 +248,7 @@ class PhysicsDataProcessor:
                         with open(expanded_latex_path, 'w', encoding='utf-8') as f:
                             f.write(latex)
                         print(f"LaTex公式已保存到: {expanded_latex_path}")
-            elif choice == '7':
+            elif choice == '6':
                 print("程序退出")
                 break
             else:
