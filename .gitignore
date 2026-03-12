@@ -1,0 +1,23 @@
+# 忽略临时文件
+*~
+
+# 忽略Office临时文件
+.~*.docx
+
+# 忽略PDF文件
+*.pdf
+
+# 忽略Python缓存
+__pycache__/
+*.pyc
+
+# 忽略图像文件
+*.png
+*.jpg
+*.jpeg
+
+# 忽略LaTex生成的文件
+*.aux
+*.log
+*.out
+*.toc
