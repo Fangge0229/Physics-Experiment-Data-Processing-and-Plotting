@@ -76,8 +76,12 @@ class PhysicsDataProcessor:
         slope, intercept, r_value, p_value, std_err = stats.linregress(self.x_data, self.y_data)
         fit_line = slope * self.x_data + intercept
         
+        # 设置中文字体
+        plt.rcParams['font.sans-serif'] = ['Arial Unicode MS', 'SimHei', 'DejaVu Sans']
+        plt.rcParams['axes.unicode_minus'] = False
+        
         # 绘制图像
-        plt.figure(figsize=(10, 6))
+        fig = plt.figure(figsize=(10, 6))
         plt.scatter(self.x_data, self.y_data, label='原始数据', color='blue')
         plt.plot(self.x_data, fit_line, label=f'拟合直线: y = {slope:.4f}x + {intercept:.4f}', color='red')
         plt.xlabel('X')
@@ -88,12 +92,20 @@ class PhysicsDataProcessor:
         
         # 保存图像
         if save_path:
-            # 展开路径中的~符号
-            expanded_path = os.path.expanduser(save_path)
-            plt.savefig(expanded_path)
-            print(f"图像已保存到: {expanded_path}")
+            try:
+                # 展开路径中的~符号
+                expanded_path = os.path.expanduser(save_path)
+                # 确保目录存在
+                os.makedirs(os.path.dirname(expanded_path), exist_ok=True)
+                plt.savefig(expanded_path, dpi=300, bbox_inches='tight')
+                plt.close(fig)
+                print(f"图像已保存到: {expanded_path}")
+            except Exception as e:
+                print(f"保存图像时出错: {e}")
+                plt.close(fig)
         else:
             plt.show()
+            plt.close(fig)
     
     def get_latex_formulas(self):
         if len(self.x_data) == 0:
