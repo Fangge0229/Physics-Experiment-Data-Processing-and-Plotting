@@ -24,6 +24,25 @@ class PhysicsDataProcessor:
         self.x_data = np.array(self.x_data)
         self.y_data = np.array(self.y_data)
     
+    def input_single_variable_data(self):
+        """输入单变量数据，自动为其搭配1,2...的横坐标"""
+        print("请输入单变量数据，数据间使用空格隔开，输入q结束")
+        while True:
+            try:
+                line = input("输入数据: ")
+                if line.lower() == 'q':
+                    break
+                # 解析空格分隔的数据
+                values = [float(x) for x in line.split()]
+                self.y_data.extend(values)
+            except ValueError:
+                print("输入格式错误，请重新输入")
+        
+        # 自动为y数据搭配1,2...的横坐标
+        self.x_data = np.array(range(1, len(self.y_data) + 1))
+        self.y_data = np.array(self.y_data)
+        print(f"已输入{len(self.y_data)}个数据点，横坐标自动设置为1到{len(self.y_data)}")
+    
     def input_data_from_list(self, x_list, y_list):
         self.x_data = np.array(x_list)
         self.y_data = np.array(y_list)
@@ -157,21 +176,24 @@ class PhysicsDataProcessor:
     
     def show_menu(self):
         print("\n=== 物理实验数据处理程序 ===")
-        print("1. 输入数据")
-        print("2. 显示统计结果")
-        print("3. 生成拟合图像")
-        print("4. 输出LaTex公式")
-        print("5. 退出")
+        print("1. 输入双变量数据(x,y)")
+        print("2. 输入单变量数据(自动搭配横坐标1,2,...)")
+        print("3. 显示统计结果")
+        print("4. 生成拟合图像")
+        print("5. 输出LaTex公式")
+        print("6. 退出")
     
     def run(self):
         self.show_menu()
         
         while True:
-            choice = input("\n请选择功能 (1-5): ")
+            choice = input("\n请选择功能 (1-6): ")
             
             if choice == '1':
                 self.input_data()
             elif choice == '2':
+                self.input_single_variable_data()
+            elif choice == '3':
                 stats = self.calculate_statistics()
                 if stats:
                     print("\n=== 统计结果 ===")
@@ -185,10 +207,10 @@ class PhysicsDataProcessor:
                     print(f"r平方: {stats['r_squared']:.4f}")
                     print(f"标准误差: {stats['std_err']:.4f}")
                     print(f"均方根误差: {stats['rmse']:.4f}")
-            elif choice == '3':
+            elif choice == '4':
                 save_path = input("请输入保存路径（留空则直接显示）: ")
                 self.generate_plot(save_path if save_path else None)
-            elif choice == '4':
+            elif choice == '5':
                 latex = self.get_latex_formulas()
                 if latex:
                     print("\n=== LaTex公式 ===")
@@ -201,7 +223,7 @@ class PhysicsDataProcessor:
                         with open(expanded_latex_path, 'w', encoding='utf-8') as f:
                             f.write(latex)
                         print(f"LaTex公式已保存到: {expanded_latex_path}")
-            elif choice == '5':
+            elif choice == '6':
                 print("程序退出")
                 break
             else:
