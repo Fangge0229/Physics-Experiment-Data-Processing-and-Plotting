@@ -131,7 +131,7 @@ class PhysicsDataProcessor:
             print("请先输入数据")
             return
         
-        stats = self.calculate_statistics()
+        statistics = self.calculate_statistics()
         
         latex = r"""
         \section{统计结果}
@@ -160,16 +160,16 @@ class PhysicsDataProcessor:
         y = {slope:.4f}x + {intercept:.4f}
         \end{equation}
         """.format(
-            x_mean=stats['x_mean'],
-            y_mean=stats['y_mean'],
-            x_var=stats['x_var'],
-            y_var=stats['y_var'],
-            slope=stats['slope'],
-            intercept=stats['intercept'],
-            r_value=stats['r_value'],
-            r_squared=stats['r_squared'],
-            std_err=stats['std_err'],
-            rmse=stats['rmse']
+            x_mean=statistics['x_mean'],
+            y_mean=statistics['y_mean'],
+            x_var=statistics['x_var'],
+            y_var=statistics['y_var'],
+            slope=statistics['slope'],
+            intercept=statistics['intercept'],
+            r_value=statistics['r_value'],
+            r_squared=statistics['r_squared'],
+            std_err=statistics['std_err'],
+            rmse=statistics['rmse']
         )
         
         return latex
