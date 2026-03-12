@@ -155,16 +155,19 @@ class PhysicsDataProcessor:
         
         return latex
     
-    def run(self):
-        print("=== 物理实验数据处理程序 ===")
+    def show_menu(self):
+        print("\n=== 物理实验数据处理程序 ===")
         print("1. 输入数据")
         print("2. 显示统计结果")
         print("3. 生成拟合图像")
         print("4. 输出LaTex公式")
         print("5. 退出")
+    
+    def run(self):
+        self.show_menu()
         
         while True:
-            choice = input("请选择功能 (1-5): ")
+            choice = input("\n请选择功能 (1-5): ")
             
             if choice == '1':
                 self.input_data()
@@ -203,6 +206,9 @@ class PhysicsDataProcessor:
                 break
             else:
                 print("输入错误，请重新选择")
+            
+            # 每次操作后重新显示菜单
+            self.show_menu()
 
 if __name__ == "__main__":
     processor = PhysicsDataProcessor()
